@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - Travenner</title>
+    <link href='https://fonts.googleapis.com/css?family=Manrope|Montez' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .login, .register {
+            padding: 8px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .login {
+            background-color: transparent;
+            color: #113D48;
+            border: 2px solid #113D48;
+        }
+
+        .register {
+            background-color: #113D48;
+            color: white;
+        }
+
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            width: 200px;
+            z-index: 1000;
+        }
+
+        .user-profile:hover .user-dropdown {
+            display: block;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #113D48;
+            height: 40px;
+            position: fixed;
+            top: 60px;
+            width: 100%;
+            z-index: 90;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin: 0 20px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            padding: 5px 5px;
+        }
+
+        /* Existing styles */
+        body {
+            font-family: 'Manrope', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .hero {
+            background: url('/images/img1.jpg') no-repeat center center/cover;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            margin-top: 100px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            margin: 5px 0 0;
+        }
+
+        .feedback-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            cursor: pointer;
+            font-size: 30px;
+            color: #ddd;
+            margin: 0 5px;
+        }
+
+        .rating label:before {
+            content: '★';
+        }
+
+        .rating input:checked ~ label {
+            color: #ffd700;
+        }
+
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffd700;
+        }
+
+        button {
+            background-color: hsl(212, 74%, 66%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Footer Styles */
+        .footer {
+            padding: 20px 30px;
+            background-color: #113D48;
+            margin-top: 120px;
+            margin-bottom: 1px;
+        }
+
+        .footer .newsletter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            text-align: center;
+            flex-wrap: wrap;
+        }
+
+        .footer .newsletter .newsletter-text {
+            flex: 1;
+            color: #ffff;
+            text-align: left;
+        }
+
+        .footer .newsletter .newsletter-input {
+            flex: 1;
+            text-align: center right;
+        }
+
+        .footer .newsletter .newsletter-button {
+            flex: 1;
+            text-align: right;
+        }
+
+        .footer .newsletter input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 25px;
+            border: none;
+            outline: none;
+            margin-right: 10px;
+            padding-left: 15px;
+            font-size: 1rem;
+            color: white;
+            background-color: transparent;
+            border: 2px solid #1CA8CB;
+        }
+
+        .footer .newsletter button {
+            padding: 10px 40px;
+            background-color: #1CA8CB;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .footer .content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .footer .content .column {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer .content .column h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .footer .content .column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer .content .column ul li {
+            margin: 10px 0;
+        }
+
+        .footer .content .column ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .footer .social-icons a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(124, 124, 124, 0.5);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .footer .instagram-posts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .footer .instagram-post {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer .instagram-post img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .grey-line {
+            width: 100%;
+            height: 1px;
+            background-color: grey;
+            margin: 0;
+        }
+
+        .footer-text {
+            margin: 0;
+            font-size: 14px;
+            color: #ffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <img src="images/logo1.jpeg" alt="Travenner Logo">
+        </div>
+        <div class="menu">
+            <% if (!locals.user) { %>
+                <button class="login" onclick="window.location.href='/login'">Login</button>
+                <button class="register" onclick="window.location.href='/register'">Sign Up</button>
+            <% } else { %>
+                <div class="user-profile">
+                    <img src="<%= locals.user.profileImage || '/images/default-user.png' %>" alt="User Profile" class="user-avatar">
+                    <div class="user-dropdown">
+                        <span class="user-name"><%= locals.user.name %></span>
+                        <a href="/profile"><i class="fas fa-user"></i> My Profile</a>
+                        <a href="/my-bookings"><i class="fas fa-suitcase"></i> My Bookings</a>
+                        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/trips">Trips</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/contact-us">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>Feedback</h1>
+            <p>Home &rarr; Feedback</p>
+        </div>
+    </div>
+
+    <div class="feedback-container">
+        <h2>Share Your Experience</h2>
+        <form id="feedbackForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Rating</label>
+                <div class="rating">
+                    <input type="radio" id="star5" name="rating" value="5" required>
+                    <label for="star5"></label>
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4"></label>
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3"></label>
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2"></label>
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1"></label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="feedback">Your Feedback</label>
+                <textarea id="feedback" name="feedback" required></textarea>
+            </div>
+
+            <button type="submit">Submit Feedback</button>
+        </form>
+        <div id="message" class="message"></div>
+    </div>
+
+    <footer class="footer">
+        <div class="newsletter">
+            <div class="newsletter-text">
+                <h2 style="color: white; margin: 0;">Get Updated With The Latest Newsletter</h2>
+            </div>
+            <div class="newsletter-input">
+                <input type="email" placeholder="Enter your Email" style="width: 100%; max-width: 400px;">
+            </div>
+            <div class="newsletter-button">
+                <button style="background-color: #1CA8CB; border-radius: 25px; padding: 10px 30px;">Subscribe Now <i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        
+        <div class="content" style="margin-top: 40px;">
+            <div class="column">
+                <div style="margin-bottom: 20px;">
+                    <img src="images/logo1.jpeg" alt="Travenner Logo" style="height: 60px;">
+                    <h3 style="color: white; margin: 10px 0;">Travenner</h3>
+                </div>
+                <div class="social-icons">
+                    <a href="#" style="background: rgba(255,255,255,0.1); margin-right: 10px;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="background: rgba(255,255,255,0.1); margin-right: 10px;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="background: rgba(255,255,255,0.1); margin-right: 10px;"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" style="background: rgba(255,255,255,0.1); margin-right: 10px;"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" style="background: rgba(255,255,255,0.1);"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="column">
+                <h3 style="color: white; margin-bottom: 20px;">Quick Links</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 15px;"><a href="/" style="color: white; text-decoration: none;"><i class="fas fa-angle-right"></i> Home</a></li>
+                    <li style="margin-bottom: 15px;"><a href="/about" style="color: white; text-decoration: none;"><i class="fas fa-angle-right"></i> About Us</a></li>
+                    <li style="margin-bottom: 15px;"><a href="/trips" style="color: white; text-decoration: none;"><i class="fas fa-angle-right"></i> Trips</a></li>
+                    <li style="margin-bottom: 15px;"><a href="/contact-us" style="color: white; text-decoration: none;"><i class="fas fa-angle-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="column">
+                <h3 style="color: white; margin-bottom: 20px;">Get In Touch</h3>
+                <div style="color: white;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <img src="images/phone.svg" alt="Phone" style="width: 20px; margin-right: 10px;">
+                        <div>
+                            <p style="margin: 0;">+01 234 567 890</p>
+                            <p style="margin: 5px 0 0;">+09 876 543 210</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <img src="images/envelope.svg" alt="Email" style="width: 20px; margin-right: 10px;">
+                        <div>
+                            <p style="margin: 0;">mailinfo00@travenner.com</p>
+                            <p style="margin: 5px 0 0;">support24@travenner.com</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <img src="images/location.svg" alt="Location" style="width: 20px; margin-right: 10px;">
+                        <p style="margin: 0;">Vasai-Virar,Maharastra</p>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <h3 style="color: white; margin-bottom: 20px;">Instagram Post</h3>
+                <div class="instagram-posts" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div style="position: relative;">
+                        <img src="images/gallery_1_1.jpg" alt="Instagram Post" style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                    </div>
+                    <div style="position: relative;">
+                        <img src="images/gallery_1_2.jpg" alt="Instagram Post" style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                    </div>
+                    <div style="position: relative;">
+                        <img src="images/gallery_1_3.jpg" alt="Instagram Post" style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                    </div>
+                    <div style="position: relative;">
+                        <img src="images/gallery_1_4.jpg" alt="Instagram Post" style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                    </div>
+                    <div style="position: relative;">
+                        <img src="images/gallery_1_5.jpg" alt="Instagram Post" style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                    </div>
+                    <div style="position: relative;">
+                        <img src="images/gallery_1_6.jpg" alt="Instagram Post" style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr style="border: none; height: 1px; background-color: rgba(255,255,255,0.1); margin: 30px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; color: white;">
+            <p style="margin: 0;">Copyright 2025 Travenner. All Rights Reserved.</p>
+            <div style="display: flex; align-items: center;">
+                <span style="margin-right: 10px;">We Accept</span>
+                <img src="images/cards.png" alt="Payment Methods" style="height: 30px;">
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const feedback = document.getElementById('feedback').value;
+            const rating = document.querySelector('input[name="rating"]:checked')?.value;
+            const messageDiv = document.getElementById('message');
+
+            try {
+                const response = await fetch('/submit-feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, feedback, rating })
+                });
+
+                const data = await response.json();
+                
+                messageDiv.textContent = data.message;
+                messageDiv.className = `message ${response.ok ? 'success' : 'error'}`;
+                messageDiv.style.display = 'block';
+
+                if (response.ok) {
+                    document.getElementById('feedbackForm').reset();
+                }
+            } catch (error) {
+                messageDiv.textContent = 'An error occurred. Please try again.';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

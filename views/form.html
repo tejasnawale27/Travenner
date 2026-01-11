@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Package</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            margin-bottom: 20px;
+            position: relative;
+            top: 20px; /* Adjusts the vertical position */
+        }
+
+        .container h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .form-row input, .form-row textarea, .form-row select {
+            flex: 1;
+            min-width: 200px; /* Ensures a minimum width for inputs */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px; /* Adds space between form fields and button */
+        }
+
+        .container button:hover {
+            background-color: #0056b3;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 250px;
+            margin-bottom: 20px;
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card-content h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .card-content p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .card-content .price {
+            font-size: 20px;
+            color: #000;
+            margin: 10px 0;
+        }
+
+        .card-content .duration {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .card-content .book-now {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .detail-view {
+            display: none;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin-top: 20px;
+        }
+
+        .detail-view h2 {
+            margin-top: 0;
+        }
+
+        .detail-view ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .detail-view ul li {
+            margin-bottom: 10px;
+        }
+
+        .detail-view .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%; /* Make the container responsive */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Add New Package</h2>
+        <button id="addPackageButton" onclick="showForm()">Add new Package</button>
+        <form id="addPackageForm" style="display: none;">
+            <div class="form-row">
+                <input type="text" id="packageName" placeholder="Package Name" required>
+                <input type="text" id="location" placeholder="Location" required>
+            </div>
+            <div class="form-row">
+                <input type="number" id="price" placeholder="Price" required>
+                <textarea id="overview" placeholder="Overview" required></textarea>
+            </div>
+            <div class="form-row">
+                <input type="file" id="images" accept="image/*" multiple required>
+                <input type="text" id="accommodation" placeholder="Accommodation" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="departureCity" placeholder="Departure City" required>
+                <input type="text" id="arrivalCity" placeholder="Arrival City" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="bestSeason" placeholder="Best Season" required>
+                <input type="text" id="guide" placeholder="Guide" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="language" placeholder="Language" required>
+                <input type="text" id="meals" placeholder="Meals" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="tourAvailability" placeholder="Tour Availability" required>
+                <input type="text" id="transportation" placeholder="Transportation" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="walkingHours" placeholder="Walking Hours" required>
+                <input type="number" id="minimumAge" placeholder="Minimum Age" required>
+            </div>
+            <div class="form-row">
+                <input type="number" id="maximumAge" placeholder="Maximum Age" required>
+                <input type="number" id="groupSize" placeholder="Group Size" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="destinations" placeholder="Destinations" required>
+                <input type="text" id="activities" placeholder="Activities" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="tripType" placeholder="Trip Type" required>
+                <textarea id="itinerary" placeholder="Itinerary"></textarea>
+            </div>
+            <div class="form-row">
+                <textarea id="faqs" placeholder="FAQs"></textarea>
+            </div>
+            <button type="button" onclick="addPackage();showMap();">Add Package</button>
+        </form>
+    </div>
+
+    <div class="cards-container" id="cardsContainer">
+        <!-- Existing packages will be displayed here -->
+    </div>
+
+    <div class="detail-view" id="detailView">
+        <h2>Package Details</h2>
+        <ul>
+            <li><strong>Package Name:</strong> <span id="detailName"></span></li>
+            <li><strong>Location            <li><strong>Location:</strong> <span id="detailLocation"></span></li>
+            <li><strong>Price:</strong> <span id="detailPrice"></span></li>
+            <li><strong>Overview:</strong> <span id="detailOverview"></span></li>
+            <li><strong>Departure City:</strong> <span id="detailDepartureCity"></span></li>
+            <li><strong>Arrival City:</strong> <span id="detailArrivalCity"></span></li>
+            <li><strong>Guide:</strong> <span id="detailGuide"></span></li>
+            <li><strong>Trip Type:</strong> <span id="detailTripType"></span></li>
+            <li><strong>Itinerary:</strong> <span id="detailItinerary"></span></li>
+        </ul>
+        <button class="back-button" onclick="hideDetailView()">Back to Packages</button>
+    </div>
+
+    <script>
+        // JavaScript logic for adding, displaying, and showing details of packages
+        let packages = [];
+
+        function showForm() {
+            document.getElementById('addPackageForm').style.display = 'block';
+            document.getElementById('addPackageButton').style.display = 'none';
+        }
+
+        function addPackage() {
+            const packageName = document.getElementById('packageName').value;
+            const location = document.getElementById('location').value;
+            const price = document.getElementById('price').value;
+            const overview = document.getElementById('overview').value;
+            const departureCity = document.getElementById('departureCity').value;
+            const arrivalCity = document.getElementById('arrivalCity').value;
+            const guide = document.getElementById('guide').value;
+           let imageInput = document.getElementById("images");
+            let images = [];
+
+            const newPackage = {
+                packageName,
+                location,
+                price,
+                overview,
+                accommodation,
+                departureCity,
+                arrivalCity,
+                bestSeason,
+                guide,
+                language,
+                meals,
+                tourAvailability,
+                transportation,
+                walkingHours,
+                minimumAge,
+                maximumAge,
+                groupSize,
+                destinations,
+                activities,
+                tripType,
+                itinerary,
+                faqs
+            };
+
+            packages.push(newPackage);
+            displayPackages();
+            document.getElementById('addPackageForm').reset();
+            document.getElementById('addPackageForm').style.display = 'none';
+            document.getElementById('addPackageButton').style.display = 'block';
+            if (imageInput.files.length > 0) {
+        for (let i = 0; i < imageInput.files.length; i++) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                images.push(e.target.result);
+                if (images.length === imageInput.files.length) {
+                    displayPackage(packageName, location, price, overview, images);
+                }
+            };
+            reader.readAsDataURL(imageInput.files[i]);
+        }
+    } else {
+        alert("Please select at least one image.");
+    }
+        }
+
+        function displayPackages() {
+            const cardsContainer = document.getElementById('cardsContainer');
+            cardsContainer.innerHTML = ''; // Clear previous cards
+
+            packages.forEach((pkg, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `
+                    <img src="https://via.placeholder.com/250" alt="Package Image">
+                    <div class="card-content">
+                        <h3>${pkg.packageName}</h3>
+                        <p><strong>Location:</strong> ${pkg.location}</p>
+                        <p class="price">Price: $${pkg.price}</p>
+                        <p class="duration">Best Season: ${pkg.bestSeason}</p>
+                        <button class="book-now" onclick="showDetailView(${index})">View Details</button>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        function showDetailView(index) {
+            const pkg = packages[index];
+            document.getElementById('detailName').innerText = pkg.packageName;
+            document.getElementById('detailLocation').innerText = pkg.location;
+            document.getElementById('detailPrice').innerText = `$${pkg.price}`;
+            document.getElementById('detailOverview').innerText = pkg.overview;
+            document.getElementById('detailAccommodation').innerText = pkg.accommodation;
+            document.getElementById('detailDepartureCity').innerText = pkg.departureCity;
+            document.getElementById('detailArrivalCity').innerText = pkg.arrivalCity;
+            document.getElementById('detailBestSeason').innerText = pkg.bestSeason;
+            document.getElementById('detailGuide').innerText = pkg.guide;
+            document.getElementById('detailLanguage').innerText = pkg.language;
+            document.getElementById('detailMeals').innerText = pkg.meals;
+            document.getElementById('detailTourAvailability').innerText = pkg.tourAvailability;
+            document.getElementById('detailTransportation').innerText = pkg.transportation;
+            document.getElementById('detailWalkingHours').innerText = pkg.walkingHours;
+            document.getElementById('detailMinimumAge').innerText = pkg.minimumAge;
+            document.getElementById('detailMaximumAge').innerText = pkg.maximumAge;
+            document.getElementById('detailGroupSize').innerText = pkg.groupSize;
+            document.getElementById('detailDestinations').innerText = pkg.destinations;
+            document.getElementById('detailActivities').innerText = pkg.activities;
+            document.getElementById('detailTripType').innerText = pkg.tripType;
+            document.getElementById('detailItinerary').innerText = pkg.itinerary;
+            document.getElementById('detailFaqs').innerText = pkg.faqs;
+
+            document.getElementById('detailView').style.display = 'block';
+            document.getElementById('cardsContainer').style.display = 'none';
+        }
+
+        function hideDetailView() {
+            document.getElementById('detailView').style.display = 'none';
+            document.getElementById('cardsContainer').style.display = 'flex';
+        }
+        // Map functionality
+        var map = L.map('map').setView([20.5937, 78.9629], 5); // Default view set to India
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+
+        function showMap() {
+            var location = document.getElementById("location").value;
+            if (location === "") {
+                alert("Please enter a location.");
+                return;
+            }
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        var lat = data[0].lat;
+                        var lon = data[0].lon;
+                        
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+
+                        marker = L.marker([lat, lon]).addTo(map)
+                            .bindPopup(`<b>${location}</b>`)
+                            .openPopup();
+                        
+                        map.setView([lat, lon], 10);
+                    } else {
+                        alert("Location not found. Please enter a valid location.");
+                    }
+                })
+                .catch(error => console.error("Error fetching location data:", error));
+        }
+    </script>
+
+</body>
+</html>

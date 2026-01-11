@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Scrolling Slider</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .slider-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            border-radius: 8px;
+        }
+        .slider {
+            display: flex;
+            width: 300%;
+            transition: transform 1s ease-in-out;
+        }
+        .slider img {
+            width: 33.3333%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .content {
+            display: flex;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .left-section {
+            flex: 2;
+            padding: 10px;
+        }
+        .right-section {
+            flex: 1;
+            padding: 10px;
+            border-left: 1px solid #ccc;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .tag {
+            display: inline-block;
+            background-color: green;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .info {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .right-section p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .discount {
+            color: blue;
+            font-weight: bold;
+        }
+        .check-availability {
+            display: block;
+            background-color: blue;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            text-decoration: none;
+            margin-top: 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .check-availability:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="slider-container">
+        <div class="slider">
+            <img src="images/1.jpg" alt="Slide 1">
+            <img src="images/2.jpg" alt="Slide 2">
+            <img src="images/3.jpg" alt="Slide 3">
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="left-section">
+            <div class="title">Title: hereeeeeeeee</div>
+            <div class="tag">location</div>
+            <div class="info"><strong>Overview:</strong> Sample overview text goes here.</div>
+            <div class="info"><strong>Accommodation:</strong> Sample accommodation details here.</div>
+            <div class="info"><strong>Departure:</strong> Departure information goes here.</div>
+            <div class="info"><strong>Arrival:</strong> Arrival details go here.</div>
+            <div class="info"><strong>Guide:</strong> Guide-related information.</div>
+            <div class="info"><strong>Trip Type:</strong> Details about trip type.</div>
+            <div class="info"><strong>Itinerary:</strong> Itinerary details here.</div>
+        </div>
+        <div class="right-section">
+            <p><span class="discount">12% Off</span></p>
+            <p>Adult: <del>$680</del> <span class="discount">$500</span></p>
+            <p>Child: <del>$280</del> <span class="discount">$250</span></p>  
+            <a href="#" class="check-availability">Check Availability</a>
+            <p>Need help with booking? Send us a message</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let index = 0;
+    const slider = document.querySelector('.slider');
+    const totalSlides = document.querySelectorAll('.slider img').length;
+
+    function autoSlide() {
+        index = (index + 1) % totalSlides;
+        slider.style.transform = `translateX(-${index * 33.3333}%)`;
+    }
+
+    setInterval(autoSlide, 3000); // Change slide every 3 seconds
+</script>
+
+</body>
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Guides - Travenner</title>
+    <link href='https://fonts.googleapis.com/css?family=Manrope|Montez' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #f9f9f9;
+        }
+
+        /* Header Styles */
+        .header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-bottom: none;
+            z-index: 800;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: transparent;
+        }
+
+        .menu .login, .menu .register {
+            border: 1px solid #1CA8CB;
+            color: #1CA8CB;
+            background: transparent;
+        }
+
+        .menu .login:hover, .menu .register:hover {
+            background: #1CA8CB;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50px;
+            object-fit: cover;
+            border: 2px solid #1CA8CB;
+            padding: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            border-color: #113D48;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            min-width: 200px;
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .user-profile:hover .user-dropdown {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-name {
+            display: block;
+            padding: 8px 16px;
+            font-weight: bold;
+            color: #113D48;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 8px;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 8px 16px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #f5f5f5;
+            color: #1CA8CB;
+            padding-left: 20px;
+        }
+
+        .user-dropdown a i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+            color: #1CA8CB;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            height: 300px;
+            background: linear-gradient(rgba(17, 61, 72, 0.8), rgba(17, 61, 72, 0.8)), url('/images/guide-hero.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 100px;
+            position: relative;
+        }
+
+        .hero-section h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-family: 'Montez', cursive;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            background-color: #113D48;
+            height: 40px;
+            position: fixed;
+            top: 60px;
+            width: 100%;
+            z-index: 90;
+            padding-right: 20px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            position: relative;
+            margin: 0 20px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            padding: 5px 5px;
+            display: inline-block;
+        }
+
+        /* Guide Section Styles */
+        .guides-section {
+            margin-top: 120px;
+            padding: 50px 20px;
+            background: linear-gradient(to bottom, #f9f9f9, #ffffff);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h1 {
+            font-family: 'Montez', cursive;
+            font-size: 48px;
+            color: #1CA8CB;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: #113D48;
+            font-size: 18px;
+        }
+
+        .guides-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .guide-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .guide-image {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .guide-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .guide-card:hover .guide-image img {
+            transform: scale(1.1);
+        }
+
+        .guide-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .guide-name {
+            font-size: 24px;
+            color: #113D48;
+            margin-bottom: 5px;
+        }
+
+        .guide-title {
+            color: #1CA8CB;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .guide-expertise {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .expertise-tag {
+            background: rgba(28, 168, 203, 0.1);
+            color: #1CA8CB;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .guide-rating {
+            color: #FFD700;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .guide-social {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .guide-social a {
+            color: #113D48;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .guide-social a:hover {
+            color: #1CA8CB;
+        }
+
+        /* Footer Styles */
+        .footer {
+            padding: 40px 30px;
+            background-color: #113D48;
+            margin-top: 50px;
+            color: white;
+        }
+
+        .footer .newsletter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            gap: 30px;
+        }
+
+        .footer .newsletter .newsletter-text {
+            flex: 1;
+        }
+
+        .footer .newsletter .newsletter-text h2 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .footer .newsletter .newsletter-input {
+            flex: 2;
+        }
+
+        .footer .newsletter input[type="email"] {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 1px solid #1CA8CB;
+            background-color: transparent;
+            color: white;
+            font-size: 16px;
+        }
+
+        .footer .newsletter .newsletter-button {
+            flex: 0 0 auto;
+        }
+
+        .footer .newsletter button {
+            padding: 12px 30px;
+            border-radius: 50px;
+            background-color: #1CA8CB;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .footer .newsletter button:hover {
+            background-color: #1790af;
+        }
+
+        .footer .newsletter button i {
+            font-size: 14px;
+        }
+
+        .footer .content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1.5fr 2fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .footer .content .column h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer .content .column:first-child img {
+            width: 150px;
+            margin-bottom: 15px;
+        }
+
+        .footer .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .footer .social-icons a {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .footer .social-icons a:hover {
+            background-color: #1CA8CB;
+            transform: translateY(-3px);
+        }
+
+        .footer .content .column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer .content .column ul li {
+            margin-bottom: 15px;
+        }
+
+        .footer .content .column ul li a {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer .content .column ul li a i {
+            color: #1CA8CB;
+            font-size: 12px;
+        }
+
+        .footer .th-widget-contact .info-box_text {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .footer .th-widget-contact .info-box_text .icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer .th-widget-contact .info-box_text .details {
+            flex: 1;
+        }
+
+        .footer .th-widget-contact .info-box_text .details p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .footer .instagram-posts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .footer .instagram-post {
+            position: relative;
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+
+        .footer .instagram-post img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .footer .instagram-post:hover img {
+            transform: scale(1.1);
+        }
+
+        .footer .instagram-post a {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer .instagram-post:hover a {
+            opacity: 1;
+        }
+
+        .grey-line {
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 30px 0;
+        }
+
+        .footer-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-text .card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-text .card img {
+            height: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .footer .content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer .newsletter {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-text {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <img src="images/logo1.jpeg" alt="Travenner Logo">
+        </div>
+        <div class="menu">
+            <% if (!locals.user) { %>
+                <button class="login" onclick="window.location.href='/login'">Login</button>
+                <button class="register" onclick="window.location.href='/register'">Sign Up</button>
+            <% } else { %>
+                <div class="user-profile">
+                    <img src="<%= locals.user.profileImage || '/images/default-user.png' %>" alt="User Profile" class="user-avatar">
+                    <div class="user-dropdown">
+                        <span class="user-name"><%= locals.user.name %></span>
+                        <!-- <a href="/profile"><i class="fas fa-user"></i> My Profile</a>
+                        <a href="/my-bookings"><i class="fas fa-suitcase"></i> My Bookings</a> -->
+                        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/destination">Destination</a></li>
+            <li>
+                <a onclick="window.location.href='/guide'">Services</a>
+                
+            </li>
+            <li><a href="/trips">Trips</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/contact-us">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div>
+            <h1>Meet Our Expert Guides</h1>
+            <p>Discover the passionate professionals who will make your journey unforgettable</p>
+        </div>
+    </section>
+
+    <!-- Guides Section -->
+    <section class="guides-section">
+        <div class="section-header">
+            <h1>Our Professional Guides</h1>
+            <p>Meet our experienced and passionate travel guides</p>
+        </div>
+
+        <div class="guides-container">
+            <!-- Guide Card 1 -->
+            <div class="guide-card">
+                <div class="guide-image">
+                    <img src="images/guide1.jpeg" alt="Sarah Johnson">
+                </div>
+                <div class="guide-info">
+                    <h3 class="guide-name">William Smith</h3>
+                    <p class="guide-title">Senior Adventure Guide</p>
+                    <div class="guide-expertise">
+                        <span class="expertise-tag">Trekking</span>
+                        <span class="expertise-tag">Mountain Climbing</span>
+                    </div>
+                    <div class="guide-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="guide-social">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guide Card 2 -->
+            <div class="guide-card">
+                <div class="guide-image">
+                    <img src="images/guide2.jpeg" alt="Michael Chen">
+                </div>
+                <div class="guide-info">
+                    <h3 class="guide-name">Jennifer O'Niell</h3>
+                    <p class="guide-title">Cultural Expert</p>
+                    <div class="guide-expertise">
+                        <span class="expertise-tag">History</span>
+                        <span class="expertise-tag">Architecture</span>
+                    </div>
+                    <div class="guide-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <div class="guide-social">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guide Card 3 -->
+            <div class="guide-card">
+                <div class="guide-image">
+                    <img src="images/guide3.jpeg" alt="Emma Rodriguez">
+                </div>
+                <div class="guide-info">
+                    <h3 class="guide-name">Eltaf Rodriguez</h3>
+                    <p class="guide-title">Wildlife Expert</p>
+                    <div class="guide-expertise">
+                        <span class="expertise-tag">Safari</span>
+                        <span class="expertise-tag">Photography</span>
+                    </div>
+                    <div class="guide-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="guide-social">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guide Card 4 -->
+            <div class="guide-card">
+                <div class="guide-image">
+                    <img src="images/guide4.jpeg" alt="David Smith">
+                </div>
+                <div class="guide-info">
+                    <h3 class="guide-name">David Goggins
+                        <span class="expertise-tag">Rafting</span>
+                        <span class="expertise-tag">Rock Climbing</span>
+                    </div>
+                    <div class="guide-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="guide-social">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="newsletter">
+            <div class="newsletter-text">
+                <h2>Get Updated With The Latest Newsletter</h2>
+            </div>
+            <div class="newsletter-input">
+                <input type="email" placeholder="Enter your Email">
+            </div>
+            <div class="newsletter-button">
+                <button>SUBSCRIBE NOW <i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="column">
+                <img src="images/logo1.jpeg" alt="Travenner Logo">
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/"><i class="fas fa-angle-right"></i> Home</a></li>
+                    <li><a href="/about"><i class="fas fa-angle-right"></i> About Us</a></li>
+                    <li><a href="/trips"><i class="fas fa-angle-right"></i> Trips</a></li>
+                    <li><a href="/contact-us"><i class="fas fa-angle-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="column">
+                <h3>Get In Touch</h3>
+                <div class="th-widget-contact">
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <i class="fas fa-phone" style="color: #1CA8CB;"></i>
+                        </div>
+                        <div class="details">
+                            <p>+01 234 567 890</p>
+                            <p>+09 876 543 210</p>
+                        </div>
+                    </div>
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <i class="fas fa-envelope" style="color: #1CA8CB;"></i>
+                        </div>
+                        <div class="details">
+                            <p>mailinfo00@travenner.com</p>
+                            <p>support24@travenner.com</p>
+                        </div>
+                    </div>
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <i class="fas fa-map-marker-alt" style="color: #1CA8CB;"></i>
+                        </div>
+                        <div class="details">
+                            <p>Vasai-Virar,Maharastra</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <h3>Instagram Post</h3>
+                <div class="instagram-posts">
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_1.jpg" alt="Instagram Image">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_2.jpg" alt="Instagram Image">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_3.jpg" alt="Instagram Image">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_4.jpg" alt="Instagram Image">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_5.jpg" alt="Instagram Image">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_6.jpg" alt="Instagram Image">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grey-line"></div>
+        <div class="footer-text">
+            <p>Copyright 2025 Travenner. All Rights Reserved.</p>
+            <div class="card">
+                <p>We Accept</p>
+                <img src="images/cards.png" alt="Payment Methods">
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navbar scroll behavior
+            let lastScroll = 0;
+            const navbar = document.querySelector('.navbar');
+            const header = document.querySelector('.header');
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll > lastScroll && currentScroll > 100) {
+                    navbar.style.top = '-40px';
+                    header.style.transform = 'translateY(-100%)';
+                } else {
+                    navbar.style.top = '60px';
+                    header.style.transform = 'translateY(0)';
+                }
+                
+                lastScroll = currentScroll;
+            });
+
+            // Add smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

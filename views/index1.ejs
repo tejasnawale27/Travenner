@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package Details</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .login, .register {
+            padding: 8px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .login {
+            background-color: transparent;
+            color: #113D48;
+            border: 2px solid #113D48;
+        }
+
+        .register {
+            background-color: #113D48;
+            color: white;
+        }
+
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            width: 200px;
+            z-index: 1000;
+        }
+
+        .user-profile:hover .user-dropdown {
+            display: block;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #113D48;
+            height: 40px;
+            position: fixed;
+            top: 60px;
+            width: 100%;
+            z-index: 90;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin: 0 20px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            padding: 5px 5px;
+        }
+
+        /* Adjust hero section to account for fixed header */
+        .hero {
+            margin-top: 100px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            body {
+                margin: 0;
+                font-family: Manrope, sans-serif;
+                background-color: #f4f4f4;
+                transition: margin-top 0.3s ease;
+            }
+
+            .hero {
+                background: url('images/img1.jpg') no-repeat center center/cover;
+                position: relative;
+                height: 300px;
+                width: 103%;
+                display: flex;
+                top: -120px;
+                margin-left: -24px;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            }
+
+            .hero h1 {
+                font-size: 34px;
+                margin: 0;
+                font-family: Manrope, sans-serif;
+            }
+
+            .hero p {
+                font-size: 1rem;
+                margin: 10px 0 0;
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            flex: 1;
+        }
+        .slider-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            border-radius: 8px;
+        }
+        .slider {
+            display: flex;
+            width: 300%;
+            transition: transform 1s ease-in-out;
+        }
+        .slider img {
+            width: 33.3333%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: auto;
+            gap: 20px;
+        }
+        .left-section {
+            flex: 3;
+            width: 60%;
+            padding: 20px;
+            margin-left: -120px;
+            margin-right: 45px;
+        }
+        .right-section {
+            flex: 1;
+            width: 35%;
+            margin-right: -128px;
+            margin-bottom: 237px;
+            border: 2px solid black; /* Ensure all borders are visible */
+            background: #ffffff;
+            padding: 45px;
+            border-radius: 10px;
+            box-sizing: border-box;
+            text-align: center;
+
+            /* Fix for the left border visibility issue */
+            border-left: 2px solid black; 
+
+            /* Add subtle shadow for better visual appeal */
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Improve text inside the section */
+        .right-section p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        /* Style for buttons inside right-section */
+        .right-section .check-availability {
+            display: inline-block;
+            background-color: #113D48;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .right-section .check-availability:hover {
+            background-color: #0c2d36;
+        }
+
+        /* Better spacing for elements */
+        .right-section .discount {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff5733;
+            margin-top: 10px;
+        }
+
+        /* Make it responsive */
+        @media (max-width: 768px) {
+            .right-section {
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+            }
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .tag {
+            display: inline-block;
+            background-color: green;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .info, .info3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #555;
+        }
+        .info3 {
+            text-align: justify;
+            margin-top: 10px;
+        }
+        .info2 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #000;
+            border: solid 2px green;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .discount {
+            color: red;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .check-availability {
+            display: block;
+            background: #113D48;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 18px;
+            text-decoration: none;
+            margin-top: 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .check-availability:hover {
+            background-color: #0056b3;
+        }
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .days {
+            margin-left: 15px;
+        }
+        #map {
+            height: 255px;
+            width: 73%;
+            margin-top: 20px;
+            margin-left: 170px;
+        }
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            width: 125px;
+            background: #113D48;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+        }
+        .leaflet-control-attribution {
+            display: none !important; /* Hide Leaflet logo */
+        }
+        .footer-section {
+            background-color: #1c3d3d;
+            color: white;
+            padding: 40px 0;
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            box-sizing: border-box;
+        }
+
+        .newsletter-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 40px;
+        }
+
+        .newsletter-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 500;
+            margin: 0;
+            flex: 1;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .email-input {
+            flex: 1;
+            max-width: 400px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .subscribe-btn {
+            padding: 12px 25px;
+            border-radius: 25px;
+            border: none;
+            background-color: #00b4d8;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1.2fr 1.3fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .company-info {
+            max-width: 300px;
+        }
+
+        .company-info h3 {
+            font-size: 24px;
+            margin: 15px 0;
+        }
+
+        .company-info p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background-color: #00b4d8;
+            transform: translateY(-3px);
+        }
+
+        .section-title {
+            color: white;
+            font-size: 22px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .quick-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .quick-links li {
+            margin-bottom: 15px;
+        }
+
+        .quick-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .quick-links a:hover {
+            color: #00b4d8;
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+        }
+
+        .instagram-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .insta-img {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .insta-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .insta-img:hover img {
+            transform: scale(1.1);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .payment-methods {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .payment-methods p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+        }
+
+        .payment-icons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .payment-icons img {
+            height: 25px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 1024px) {
+            .newsletter-wrapper {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+                padding: 0 20px;
+            }
+            .newsletter-form {
+                justify-content: center;
+                width: 100%;
+            }
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0 20px;
+                gap: 30px;
+            }
+            .footer-bottom {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .newsletter-form {
+                flex-direction: column;
+                align-items: center;
+            }
+            .email-input {
+                max-width: 100%;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                padding: 0 20px;
+            }
+            .company-info {
+                max-width: 100%;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            .payment-methods {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <img src="images/logo1.jpeg" alt="Travenner Logo">
+        </div>
+        <div class="menu">
+            <% if (!locals.user) { %>
+                <button class="login" onclick="window.location.href='/login'">Login</button>
+                <button class="register" onclick="window.location.href='/register'">Sign Up</button>
+            <% } else { %>
+                <div class="user-profile">
+                    <img src="<%= locals.user.profileImage || '/images/default-user.png' %>" alt="User Profile" class="user-avatar">
+                    <div class="user-dropdown">
+                        <span class="user-name"><%= locals.user.name %></span>
+                        <!-- <a href="/profile"><i class="fas fa-user"></i> My Profile</a>
+                        <a href="/my-bookings"><i class="fas fa-suitcase"></i> My Bookings</a> -->
+                        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/destination">Destination</a></li>
+            <li>
+                <a href="#">Services</a>
+                <ul>
+                    <li><a onclick="window.location.href='/guide'">Guide</a></li>
+                    
+                </ul>
+            </li>
+            <li><a href="/trips">Trips</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/contact-us">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>Trip Info</h1>
+            <p>Trips &rarr; Trip Info</p>
+        </div>
+    </div>
+    <a onclick="window.location.href='/trips'" class="back-btn">Back to Trips</a>
+    <div class="container">
+        <div class="slider-container">
+            <div class="slider">
+                <img id="packageimage" src="<%= packageDetails.image %>" alt="<%= packageDetails.title %>">
+            </div>
+        </div>
+    <div class="content">
+        <div class="left-section">
+            <h1 class="title"><%= packageDetails.title %></h1>
+            <div class="tag">Available</div>
+            <div class="info">
+                <strong>Location:</strong> <%= packageDetails.location %>
+            </div>
+            <div class="info2">
+                <strong>Overview:</strong><br>
+                <%= packageDetails.overview %>
+            </div>
+            <div class="info">
+                <strong>Accommodation:</strong> <%= packageDetails.accommodation %><br>
+                <strong>Departure:</strong> <%= packageDetails.departure %><br>
+                <strong>Arrival:</strong> <%= packageDetails.arrival %><br>
+                <strong>Guide:</strong> <%= packageDetails.guide %><br>
+                <strong>Trip Type:</strong> <%= packageDetails.tripType %>
+            </div>
+            <div class="info3">
+                <strong>Itinerary:</strong><br>
+                <%= packageDetails.itinerary %>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <p>Price per person</p>
+            <p class="discount">₹<%= packageDetails.newPrice %></p>
+            <p><del>₹<%= packageDetails.oldPrice %></del></p>
+            <a href="/booking?package=<%= encodeURIComponent(packageDetails.title) %>&location=<%= encodeURIComponent(packageDetails.location) %>&price=<%= packageDetails.newPrice %>" class="check-availability">Check Availability</a>
+        </div>
+    </div>
+
+    <!-- Map Section -->
+    <div id="map"></div>
+
+    <!-- Footer Section -->
+    <footer class="footer-section">
+        <div class="newsletter-wrapper">
+            <h2 class="newsletter-title">Get Updated With The Latest Newsletter</h2>
+            <div class="newsletter-form">
+                <input type="email" placeholder="Enter your Email" class="email-input">
+                <button class="subscribe-btn">SUBSCRIBE NOW ✈</button>
+            </div>
+        </div>
+
+        <div class="footer-content">
+            <!-- Company Info -->
+            <div class="company-info">
+                <img src="/images/logo.png" alt="Travenner" class="footer-logo">
+                <h3>Travenner</h3>
+                <p>Seamlessly synergize cross-functional paradigms to architect cutting-edge scalable ecosystems.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="quick-links">
+                <h3 class="section-title">Quick Links</h3>
+                <ul>
+                    <li><a href="/"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="/about"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="/trips"><i class="fas fa-chevron-right"></i> Trips</a></li>
+                    <li><a href="/contact"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+
+            <!-- Get in Touch -->
+            <div class="get-in-touch">
+                <h3 class="section-title">Get In Touch</h3>
+                <div class="contact-info">
+                    <p><i class="fas fa-phone"></i> +01 234 567 890</p>
+                    <p><i class="fas fa-phone"></i> +09 876 543 210</p>
+                    <p><i class="fas fa-envelope"></i> mailinfo00@travenner.com</p>
+                    <p><i class="fas fa-envelope"></i> support24@travenner.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Vasai-Virar,Maharastra</p>
+                </div>
+            </div>
+
+            <!-- Instagram Posts -->
+            <div class="instagram-section">
+                <h3 class="section-title">Instagram Post</h3>
+                <div class="instagram-grid">
+                    <div class="insta-img"><img src="/images/paris.jpg" alt="Paris"></div>
+                    <div class="insta-img"><img src="/images/beach.jpg" alt="Beach"></div>
+                    <div class="insta-img"><img src="/images/thailand.jpg" alt="Thailand"></div>
+                    <div class="insta-img"><img src="/images/family.jpg" alt="Family"></div>
+                    <div class="insta-img"><img src="/images/stadium.jpg" alt="Stadium"></div>
+                    <div class="insta-img"><img src="/images/dubai.jpg" alt="Dubai"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <p>Copyright 2025 Travenner. All Rights Reserved.</p>
+            <div class="payment-methods">
+                <p>We Accept</p>
+                <div class="payment-icons">
+                    <img src="/images/mastercard.png" alt="Mastercard">
+                    <img src="/images/visa.png" alt="Visa">
+                    <img src="/images/paypal.png" alt="PayPal">
+                    <img src="/images/applepay.png" alt="Apple Pay">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Map with package coordinates
+            const map = L.map('map').setView([<%= packageDetails.latitude %>, <%= packageDetails.longitude %>], 13);
+            
+            // Add the tile layer (OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Add a marker for the package location
+            L.marker([<%= packageDetails.latitude %>, <%= packageDetails.longitude %>])
+                .addTo(map)
+                .bindPopup('<%= packageDetails.title %>')
+                .openPopup();
+        });
+
+        const slider = document.querySelector(".slider");
+        const slides = document.querySelectorAll(".slide");
+        let index = 0;
+        const totalSlides = slides.length;
+
+        function autoSlide() {
+            index = (index + 1) % totalSlides;
+            slider.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        // Auto-slide every 3 seconds
+        setInterval(autoSlide, 3000);
+    </script>
+</body>
+</html>

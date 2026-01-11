@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Tour - Travenner</title>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .hero {
+            background: url('/images/img1.jpg') no-repeat center center/cover;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            margin: 5px 0 0;
+        }
+
+        .booking-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        button {
+            background-color: hsl(212, 74%, 66%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .package-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .package-details h3 {
+            margin-top: 0;
+            color: #113D48;
+        }
+        
+        .price-info {
+            font-size: 1.2rem;
+            color: #113D48;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .loading:after {
+            content: '...';
+            animation: dots 1s steps(5, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80% { content: '....'; }
+            100% { content: '.....'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div>
+            <h1>Book a Tour</h1>
+            <p>Home &rarr; Booking</p>
+        </div>
+    </div>
+
+    <div class="booking-container">
+        <div class="package-details">
+            <h3>Selected Package</h3>
+            <p><strong>Package:</strong> <span id="packageName"></span></p>
+            <p><strong>Location:</strong> <span id="packageLocation"></span></p>
+            <p class="price-info">Price per person: ₹<span id="packagePrice"></span></p>
+        </div>
+
+        <h2>Tour Booking Form</h2>
+        <form id="bookingForm">
+            <input type="hidden" id="packageId" name="packageId">
+            
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}">
+                <small>Enter 10-digit mobile number</small>
+            </div>
+
+            <div class="form-group">
+                <label for="visitDate">Preferred Visit Date *</label>
+                <input type="date" id="visitDate" name="visitDate" required min="">
+            </div>
+
+            <div class="form-group">
+                <label for="groupSize">Number of Travelers *</label>
+                <input type="number" id="groupSize" name="groupSize" min="1" required>
+                <small>Total price: ₹<span id="totalPrice">0</span></small>
+            </div>
+
+            <div class="form-group">
+                <label>Preferred Contact Methods *</label>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="contactMethods" value="email" checked> Email
+                    </label>
+                    <label>
+                        <input type="checkbox" name="contactMethods" value="phone"> Phone
+                    </label>
+                    <label>
+                        <input type="checkbox" name="contactMethods" value="whatsapp"> WhatsApp
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="callTime">Best Time to Call</label>
+                <select id="callTime" name="callTime">
+                    <option value="morning">Morning (9AM - 12PM)</option>
+                    <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                    <option value="evening">Evening (5PM - 8PM)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="additionalInfo">Special Requests or Requirements</label>
+                <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Any dietary restrictions, accessibility needs, or special requests?"></textarea>
+            </div>
+
+            <button type="submit">Confirm Booking</button>
+        </form>
+        <div id="loading" class="loading">Processing your booking</div>
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('visitDate').min = today;
+        
+        // Get package details from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const packageName = urlParams.get('package');
+        const packageLocation = urlParams.get('location');
+        const packagePrice = urlParams.get('price');
+        
+        if (packageName && packageLocation && packagePrice) {
+            document.getElementById('packageName').textContent = packageName;
+            document.getElementById('packageLocation').textContent = packageLocation;
+            document.getElementById('packagePrice').textContent = packagePrice;
+            
+            // Update total price when group size changes
+            document.getElementById('groupSize').addEventListener('input', function(e) {
+                const total = e.target.value * packagePrice;
+                document.getElementById('totalPrice').textContent = total;
+            });
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const loadingDiv = document.getElementById('loading');
+            const messageDiv = document.getElementById('message');
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            
+            // Show loading state
+            loadingDiv.style.display = 'block';
+            submitButton.disabled = true;
+            messageDiv.style.display = 'none';
+            
+            const formData = {
+                packageName: document.getElementById('packageName').textContent,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                visitDate: document.getElementById('visitDate').value,
+                groupSize: document.getElementById('groupSize').value,
+                totalPrice: document.getElementById('totalPrice').textContent,
+                contactMethods: Array.from(document.querySelectorAll('input[name="contactMethods"]:checked')).map(cb => cb.value),
+                callTime: document.getElementById('callTime').value,
+                additionalInfo: document.getElementById('additionalInfo').value
+            };
+
+            try {
+                const response = await fetch('/submit-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                // Show success message if email was sent successfully
+                messageDiv.textContent = 'Booking confirmed! Check your email for the confirmation PDF.';
+                messageDiv.className = 'message success';
+                messageDiv.style.display = 'block';
+                
+                // Reset form and redirect after successful booking
+                document.getElementById('bookingForm').reset();
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 3000);
+            } catch (error) {
+                messageDiv.textContent = 'An error occurred. Please try again.';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travenner - A Travel Planner</title>
+  <script>
+    // Language handling functions
+function toggleDropdown() {
+    const dropdown = document.getElementById("langDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+function selectLanguage(langCode, langText) {
+    // Update displayed language
+    document.getElementById("selected-lang").textContent = langText;
+    
+    // Store language preference
+    localStorage.setItem('selectedLanguage', langCode);
+    localStorage.setItem('selectedLanguageText', langText);
+    
+    // Update Google Translate
+    const translateSelect = document.querySelector(".goog-te-combo");
+    if (translateSelect) {
+        translateSelect.value = langCode;
+        translateSelect.dispatchEvent(new Event("change"));
+    }
+
+    // Close the dropdown
+    document.getElementById("langDropdown").style.display = "none";
+
+    // Adjust layout for Google Translate bar
+    adjustLayout();
+}
+
+// Load Google Translate API
+function loadGoogleTranslate() {
+    if (!document.querySelector('script[src*="translate.google.com"]')) {
+        const script = document.createElement("script");
+        script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateInit";
+        document.body.appendChild(script);
+    }
+}
+
+// Adjust layout when Google Translate bar appears
+function adjustLayout() {
+    const header = document.querySelector('.header');
+    const navbar = document.querySelector('.navbar');
+    const mainContent = document.querySelector('.main-content');
+    const translateBar = document.querySelector('.goog-te-banner-frame');
+    
+    // Wait for the translate bar to be fully rendered
+    setTimeout(() => {
+        if (document.body.classList.contains('translated-ltr') || 
+            document.body.classList.contains('translated-rtl')) {
+            // Get actual translate bar height
+            const translateBarHeight = translateBar ? translateBar.offsetHeight : 40;
+            
+            // When translated, adjust positions for the Google Translate bar
+            header.style.top = translateBarHeight + 'px';
+            navbar.style.top = (translateBarHeight + 60) + 'px';
+            if (mainContent) {
+                mainContent.style.marginTop = (translateBarHeight + 120) + 'px';
+            }
+        } else {
+            // Reset positions when not translated
+            header.style.top = '0';
+            navbar.style.top = '60px';
+            if (mainContent) {
+                mainContent.style.marginTop = '120px';
+            }
+        }
+    }, 100); // Reduced delay for faster response
+}
+
+// Setup observer for Google Translate bar
+function setupTranslateObserver() {
+    // Create observer to watch for changes to body classes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                adjustLayout();
+            }
+        });
+    });
+
+    // Watch for changes to body class
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+
+    // Also watch for the Google Translate bar
+    const translateObserver = new MutationObserver(() => {
+        adjustLayout();
+    });
+
+    // Start observing once the translate element is added
+    setTimeout(() => {
+        const translateBar = document.querySelector('.goog-te-banner-frame');
+        if (translateBar) {
+            translateObserver.observe(translateBar, {
+                attributes: true,
+                childList: true,
+                subtree: true
+            });
+        }
+    }, 1000);
+}
+
+// Initialize Google Translate
+function googleTranslateInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,mr,hi,gu,ta,te,pa,bn',
+        autoDisplay: false,
+        layout: google.translate.TranslateElement.InlineLayout.TOP
+    }, 'google_translate_element');
+    
+    // Apply stored language preference after a short delay
+    setTimeout(() => {
+        const storedLang = localStorage.getItem('selectedLanguage');
+        const storedLangText = localStorage.getItem('selectedLanguageText');
+        if (storedLang && storedLangText) {
+            selectLanguage(storedLang, storedLangText);
+        }
+        setupTranslateObserver();
+    }, 1000);
+}
+
+// Initialize translation on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadGoogleTranslate();
+    
+    // Update language display from stored preference
+    const storedLangText = localStorage.getItem('selectedLanguageText');
+    if (storedLangText) {
+        document.getElementById("selected-lang").textContent = storedLangText;
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.lang-select')) {
+            document.getElementById("langDropdown").style.display = "none";
+        }
+    });
+});
+
+    </script>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,mr,hi,gu,ta,te,pa,bn',
+            layout: google.translate.TranslateElement.InlineLayout.TOP,
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+    </script>
+       <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+       <script src="translate.js"></script>
+       <style>
+  
+     * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: transparent;
+        }
+        .header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-bottom: none;
+            z-index: 800;
+        }
+        .logo img {
+            height: 50px;
+        }
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .menu button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            background-color: transparent;
+        }
+        .menu .login, .menu .register,.menu .admin {
+            border: 1px solid #003366;
+            color: #003366;
+            background: transparent;
+        }
+        .menu .login:hover, .menu .register:hover,.menu .admin:hover {
+            background: #003366;
+            color: #fff;
+        }
+        .icon {
+            height: 24px;
+            width: 24px;
+            cursor: pointer;
+        }
+        .divider {
+            height: 20px;
+            border-left: 1px solid rgba(0, 0, 0, 0.2);
+            margin: 0 10px;
+        }
+        .call-us, .lang-select, .font-controls, .dark-mode {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+}
+
+/* Icons inside buttons */
+.call-us img, .lang-select img, .font-controls img, .dark-mode img {
+    vertical-align: middle;
+    height: 20px;
+}
+
+/* Call Us Button */
+#call-us-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s;
+}
+
+#call-us-btn:hover {
+    color: #1CA8CB;
+}
+
+/* Dropdown Menu */
+.call-us-dropdown {
+    display: none;
+    position: absolute;
+    background: white;
+    border-radius: 5px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    z-index: 1050;
+    top: 45px;
+    right: 0;
+}
+
+/* Section Headings */
+.call-us-dropdown h4 {
+    margin-bottom: 5px;
+    color: #1CA8CB;
+}
+
+/* Each Contact Section */
+.contact-section {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+/* View All Link */
+.call-us-dropdown a {
+    display: block;
+    text-align: right;
+    color: #1CA8CB;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.call-us-dropdown a:hover {
+    text-decoration: underline;
+}
+
+/* Show dropdown on button click */
+.show {
+    display: block;
+}
+.lang-select {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    padding: 5px;
+}
+
+.lang-select button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    color: #000000;
+}
+
+.lang-select img {
+    height: 16px;
+    width: auto;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 150px;
+    z-index: 1000;
+}
+
+.dropdown div {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.dropdown div:hover {
+    background: #f1f1f1;
+}
+
+#google_translate_element {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    height: 0;
+    overflow: hidden;
+}
+
+body.translated-ltr .header {
+    top: 40px !important;
+}
+
+body.translated-ltr .navbar {
+    top: 100px !important;
+}
+
+.goog-te-banner-frame {
+    display: none !important;
+}
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+      color: #333;
+    }
+
+    .why-choose-us {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 40px 60px;
+      gap: 30px;
+    }
+
+    .text-content {
+      max-width: 50%;
+    }
+
+    .text-content h3 {
+      font-family: 'Georgia', serif;
+      font-size: 20px;
+      color: #00796b;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+
+    .text-content h1 {
+      font-size: 36px;
+      color: #004d40;
+      margin-bottom: 30px;
+    }
+
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .feature img {
+      border-radius: 10px;
+      background-color: #1CA8CB; /* Blue background */
+      padding: 15px; /* More padding for centered white icon */
+      width: 40px; /* Slightly larger box size */
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .feature h2 {
+      font-size: 20px;
+      color: #004d40;
+      margin: 0 0 5px;
+    }
+
+    .feature p {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .image-grid img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            background-color: #113D48;
+            backdrop-filter: blur(10px);
+            height: 40px;
+            position: fixed;
+            top: 60px;
+            width: 100%;
+            z-index: 90;
+            padding-right: 20px;
+            transition: top 0.3s;
+        }
+
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ul li {
+    position: relative;
+    margin: 0 20px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    padding: 5px 5px;
+    display: inline-block;
+}
+
+.navbar ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+.navbar ul li ul {
+    position: absolute;
+    top: 100%;
+    right: 0; /* Align dropdown to the right */
+    background-color: #08303f;
+    display: none;
+    flex-direction: column;
+    min-width: 150px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.navbar ul li ul li {
+    margin: 0;
+}
+
+.navbar ul li ul li a {
+    padding: 10px;
+    white-space: nowrap;
+}
+
+.navbar ul li:hover ul {
+    display: flex;
+}
+
+.menu-toggle {
+    display: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.navbar .menu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.navbar .menu-icon div {
+    width: 4px;
+    height: 4px;
+    background-color: #08303f;
+    border-radius: 50%;
+    margin: 2px;
+}
+
+
+        .footer {
+            padding: 20px 30px;
+            background-color: #113D48;
+            margin-top: 120px;
+            margin-bottom: 1px;
+        }
+
+        .footer .newsletter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    text-align: center;
+    flex-wrap: wrap; /* This ensures the content is responsive */
+}
+
+.footer .newsletter .newsletter-text {
+    flex: 1;
+    color: #ffff;
+    text-align: left;
+}
+
+.footer .newsletter .newsletter-input {
+    flex: 1;
+    text-align: center right;
+}
+
+.footer .newsletter .newsletter-button {
+    flex: 1;
+    text-align: right;
+}
+
+.footer .newsletter input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    margin-right: 10px;
+    padding-left: 15px;
+    font-size: 1rem;
+    color: white;
+    background-color: transparent;
+    border: 2px solid #1CA8CB; /* Keeps existing border color */
+}
+
+.footer .newsletter button {
+    padding: 10px 40px;
+    background-color: #1CA8CB; /* Keeps existing button color */
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.footer .newsletter button:hover {
+    background-color: #113D48; /* Keeps existing hover color */
+}
+
+@media (max-width: 768px) {
+    .footer .newsletter {
+        flex-direction: column;
+    }
+
+    .footer .newsletter .newsletter-input {
+        width: 100%;
+    }
+}
+
+
+
+        .footer .content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .footer .content .column {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer .content .column h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .footer .content .column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer .content .column ul li {
+            margin: 10px 0;
+        }
+
+        .footer .content .column ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer .content .column ul li a:hover {
+            color: #1CA8CB;
+        }
+
+        .footer .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .footer .social-icons a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(124, 124, 124, 0.5);
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+
+.footer .social-icons a:hover {
+    transform: translateY(5px); /* Moves the icon down by 5px */
+    background-color: #1CA8CB;
+}
+
+.footer .instagram-posts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.footer .instagram-post {
+    position: relative;
+    overflow: hidden;
+}
+
+.footer .instagram-post img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.footer .instagram-post:hover img {
+    opacity: 0.7;
+}
+
+.footer .instagram-post a .fab.fa-instagram {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;  /* Default color */
+    font-size: 20px;
+    opacity: 0; /* Initially hidden */
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.footer .instagram-post:hover a .fab.fa-instagram {
+    opacity: 1;  /* Show on hover */
+    color: white; /* Initially white when hovering over the image */
+}
+
+.footer .instagram-post a:hover .fab.fa-instagram {
+    color: #1CA8CB !important; /* Change color when hovering over the Instagram logo */
+}
+
+/* Optional: To ensure the button appears smoothly when hovered */
+.footer .instagram-post .gallery-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-size: 30px;
+    pointer-events: none;
+}
+
+.footer .instagram-post:hover .gallery-btn {
+    opacity: 1;
+}
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1CA8CB;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .column p, h3 {
+            color: rgb(0, 0, 0);
+            padding: 5px;
+        }
+
+        .column li {
+            color: white;
+            padding: 5px;
+        }
+
+        .column {
+            padding: 10px;
+        }
+
+                @media (max-width: 768px) {
+            .navbar {
+                width: 100%; /* Navbar takes full width on small screens */
+                height: auto;
+            }
+            .navbar ul {
+                flex-direction: row; /* Align menu items horizontally on small screens */
+            }
+            .navbar ul li {
+                margin: 0 10px;
+            }
+        }
+     
+
+
+        /* Style for the gallery thumbnail container */
+.gallery-thumb {
+    position: relative;
+    width: 100%; /* Adjust as necessary */
+    max-width: 200px; /* Set a max-width if necessary */
+}
+
+/* Image styling to make it square */
+.gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0; /* Ensure no rounded corners */
+    transition: opacity 0.3s ease; /* Optional fade effect on hover */
+}
+/*Explore tours*/
+#btn {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
+      color: #1CA8CB;
+      border-radius: 50px;
+      border: 2px solid #1CA8CB;
+      font-family: sans-serif;
+      cursor: pointer;
+      transition: 0.5s;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      
+    }
+
+    #btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background: #1CA8CB;
+      transition: width 0.5s ease;
+      z-index: -1; 
+    }
+
+    #btn:hover::before {
+      width: 100%;
+    }
+
+    #btn:hover {
+      color: #113D48; 
+    }
+    /*Subscribe*/
+    #btn1 {
+        flex: 1;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
+      color: #1CA8CB;
+      border-radius: 50px;
+      border: 2px solid #1CA8CB;
+      font-family: sans-serif;
+      cursor: pointer;
+      transition: 0.5s;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    #btn1::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background: #1CA8CB;
+      transition: width 0.5s ease;
+      z-index: -1; 
+    }
+
+    #btn1:hover::before {
+      width: 100%;
+    }
+
+    #btn1:hover {
+      color: #113D48; 
+    }
+    /*For get in touch*/
+    .th-widget-contact {
+    font-family: Arial, sans-serif;
+    background-color: #113D48;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 300px; /* Adjust the max-width to make the widget smaller */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+.th-widget-contact .info-box_text {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.th-widget-contact .info-box_text .icon {
+    width: 24px; /* Smaller icons */
+    height: 24px;
+    margin-right: 10px;
+}
+
+.th-widget-contact .info-box_text .icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.th-widget-contact .info-box_text .details {
+    font-size: 14px; /* Smaller text */
+    color: #ffffff;
+}
+
+.th-widget-contact .info-box_text .details p {
+    margin: 0;
+    padding: 0;
+}
+
+.th-widget-contact .info-box_text .details a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 14px; /* Match the font size */
+    transition: color 0.3s ease;
+}
+
+.th-widget-contact .info-box_text .details a:hover {
+    color: #005f6a; /* Darker color on hover */
+}
+.grey-line {
+            width: 100%;
+            height: 1px;
+            background-color: grey;
+            margin: 0; 
+        
+        }
+        .footer-text{
+            margin: 0; 
+            font-size: 14px;
+            color: #ffff;
+        }
+        .card {
+            display: flex;
+            align-items: center;
+        }
+        .card p {
+            margin: 0;
+        }
+        .card img {
+            margin-left: 10px;
+        }
+        
+    /* Container for the entire section */
+.image-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Background image (full screen) */
+.image-container img:first-child {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* Hero section (right side images) */
+.hero {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50vw; /* Take half the width of the screen */
+    height: 100vh;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Hero images (stacked) */
+.hero img {
+    width: 100%; /* Cover the right half */
+    height: 100%; /* Full height */
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+/* Active image in the hero section */
+.hero img.active {
+    opacity: 1;
+    z-index: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero {
+        width: 100%; /* Take full width on smaller screens */
+        height: 50vh; /* Take half the height */
+    }
+
+    .hero img {
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+}
+.footer img {
+    width: 200px;  /* Set a fixed width for the logo */
+    margin-bottom: 20px;
+}
+
+.text {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            margin-left: 30px;
+            transform: translateY(-50%);
+            color: white;
+        }
+
+        .text button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .text button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .image-container img:last-child {
+                width: 100vw;
+                height: 50vh;
+                top: 50vh;
+            }
+        }
+        
+        .search-bar-container {
+    position: relative;
+    top: 30px;
+    left: 50%;
+   
+    width: 80%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    border: 3px #1CA8CB;
+}
+
+.search-bar-container select,
+.search-bar-container input {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.search-bar-container button {
+    background-color: #1CA8CB;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-bar-container button:hover {
+    background-color: #004d40;
+}
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .container {
+        width: 90%;
+    }
+    .nav-links {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        width: 95%;
+    }
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .hero-text {
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+    }
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+    }
+    .nav-links.active {
+        display: flex;
+    }
+    .content {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-text {
+        font-size: 18px;
+    }
+    .btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+.fas fa-bars{
+    background-color: #fff;
+}
+#chatbot-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: fixed;
+            background-color: #1CA8CB;
+            z-index: 1;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #chatbot-btn button {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        #chatbot-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .card-container {
+    display: flex;
+    gap: 20px; /* Space between cards */
+    overflow-x: auto; /* Enables horizontal scrolling if needed */
+    padding: 20px;
+    justify-content: center;
+    white-space: nowrap; /* Prevents wrapping */
+}
+        .package-card {
+            width: 250px;
+            background: white;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .package-card:hover {
+            transform: scale(1.05);
+        }
+        .package-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .package-info {
+            padding: 15px;
+            text-align: center;
+        }
+        .price {
+            color: #28a745;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .details-card {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            z-index: 1000;
+        }
+        .close-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .search-container {
+            border: 2px solid #29ABE2;
+            margin-left: 195px;
+            margin-top: 20px;
+            border-radius: 20px;
+            width: 900px;
+            padding: 20px;
+            align-items: center;
+            height: 65px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 10px;
+            z-index: 2;
+        }
+        .search-item {
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+            flex: 1;
+        }
+        .search-item i {
+            margin-right: 10px;
+            color: #29ABE2;
+            font-size: 1.2em;
+            width: 45px;
+            text-align: center;
+        }
+        .search-item select {
+            flex: 1;
+            padding: 5px;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            outline: none;
+            font-size: 0.9em;
+            color: #333;
+        }
+        #btn8 {
+      padding: .5rem .5rem;
+      font-size: .9rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
+      color: #1CA8CB;
+      border-radius: 30px;
+      border: 2px solid #1CA8CB;
+      font-family: sans-serif;
+      cursor: pointer;
+      transition: 0.5s;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      width: 125px;
+    }
+
+    #btn8::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background: #1CA8CB;
+      transition: width 0.5s ease;
+      z-index: -1; 
+    }
+
+    #btn8:hover::before {
+      width: 100%;
+    }
+
+    #btn8:hover {
+      color: #113D48; 
+    }
+    #con{
+        background-color: #fff;
+    }
+    .user-profile {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50px;
+        object-fit: cover;
+        border: 2px solid #1CA8CB;
+        padding: 2px;
+        background-color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-avatar:hover {
+        transform: scale(1.1);
+        border-color: #113D48;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        min-width: 200px;
+        z-index: 1000;
+    }
+
+    .user-profile:hover .user-dropdown {
+        display: block;
+    }
+
+    .user-name {
+        display: block;
+        padding: 8px 16px;
+        font-weight: bold;
+        color: #113D48;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 8px;
+    }
+
+    .user-dropdown a {
+        display: block;
+        padding: 8px 16px;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .user-dropdown a:hover {
+        background-color: #f5f5f5;
+        color: #1CA8CB;
+    }
+
+    .user-dropdown a i {
+        margin-right: 8px;
+        width: 20px;
+        text-align: center;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+    .text-container {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50vw;
+        height: 100vh;
+        background-color: #222;
+        color: white;
+        position: relative;
+        z-index: 2;
+    }
+
+    .text {
+        max-width: 600px;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    }
+
+    .text.active {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .text h1 {
+        font-family: 'Dancing Script', cursive;
+        font-size: 3.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .text p {
+        font-size: 1.8rem;
+        max-width: 500px;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Language Selector Styles */
+    .lang-select {
+        position: relative;
+        margin-left: 20px;
+        z-index: 1000;
+    }
+
+    .lang-btn {
+        display: flex;
+        align-items: center;
+        background: none;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 8px 12px;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+
+    .lang-btn:hover {
+        background-color: #f5f5f5;
+    }
+
+    .lang-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+
+    .lang-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        z-index: 1000;
+        min-width: 150px;
+        max-height: 300px;
+        overflow-y: auto;
+        margin-top: 5px;
+    }
+
+    .lang-dropdown a {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.2s;
+        cursor: pointer;
+    }
+
+    .lang-dropdown a:hover {
+        background-color: #f5f5f5;
+    }
+
+    #google_translate_element {
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        visibility: hidden;
+    }
+
+    .goog-te-banner-frame {
+        display: none !important;
+    }
+
+    .goog-te-gadget {
+        font-family: inherit !important;
+        font-size: 0 !important;
+    }
+
+    .goog-te-menu-value,
+    .goog-te-gadget span {
+        display: none !important;
+    }
+
+    body {
+        top: 0 !important;
+    }
+  </style>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="images/logo1.jpeg" alt="Logo">
+        </div>
+        <div class="menu">
+            <div class="call-us">
+                <button id="call-us-btn">
+                    <img class="icon" src="images/call.jpg" alt="Call Us">
+                    <span>Call Us</span>
+                </button>
+                <div class="call-us-dropdown">
+                    <div class="contact-section">
+                        <h4>Customer Support</h4>
+                        <p><strong>1800 123 4567</strong> (or) <strong>1800 987 6543</strong></p>
+                        <p>+91-80-12345678</p>
+                        <p>+91-80-87654321</p>
+                        <span>08:00 - 20:00 (Monday to Friday)</span>
+                    </div>
+                    <div class="contact-section">
+                        <h4>Emergency Helpline</h4>
+                        <p><strong>+91-22-34567890</strong></p>
+                        <span>24x7 Support</span>
+                    </div>
+                    <a href="#">View All</a>
+                </div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="lang-select">
+                <button>
+                    <i class="fas fa-globe"></i>
+                    <span id="selected-lang">English</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div id="google_translate_element"></div>
+                <div class="dropdown" id="langDropdown">
+                    <div onclick="selectLanguage('en', 'English')">English</div>
+                    <div onclick="selectLanguage('mr', 'Marathi')">Marathi</div>
+                    <div onclick="selectLanguage('hi', 'Hindi')">Hindi</div>
+                    <div onclick="selectLanguage('gu', 'Gujarati')">Gujarati</div>
+                    <div onclick="selectLanguage('ta', 'Tamil')">Tamil</div>
+                    <div onclick="selectLanguage('te', 'Telugu')">Telugu</div>
+                    <div onclick="selectLanguage('pa', 'Punjabi')">Punjabi</div>
+                    <div onclick="selectLanguage('bn', 'Bengali')">Bengali</div>
+                </div>
+            </div>
+            <div class="divider"></div>
+
+            <% if (!locals.user) { %>
+                <button class="login" onclick="window.location.href='/login'">Login</button>
+                <button class="register" onclick="window.location.href='/register'">Sign Up</button>
+            <% } else { %>
+                <div class="user-profile">
+                    <img src="<%= locals.user.profileImage || '/images/default-user.png' %>" alt="User Profile" class="user-avatar">
+                    <div class="user-dropdown">
+                        <span class="user-name"><%= locals.user.name %></span>
+                        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+ 
+    <nav class="navbar" id="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li>
+                <a href="/destination">Destinations</a>
+            </li>
+            <li>
+                <a href="#">Services</a>
+                <ul>
+                    <li><a onclick="window.location.href='/guide'">Guide</a></li>
+                    
+                </ul>
+            </li>
+            <li>
+                <a href="/trips">Trips</a>
+            </li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/contact-us">Contact Us</a></li>
+        </ul>
+    </nav>
+    <div class="image-container">
+        <img src="images/menuback.jpg" alt="Menu Background">
+        
+       
+                <div class="text">
+                    <h1>Wanna Travel?</h1>
+            <p>You have got the right place...</p>
+            <button id="btn" onclick="window.location.href='/trips'">Explore Tours</button>
+        </div>
+    
+
+    
+        <div class="hero">
+            <img src="images/hero_1.jpg" alt="Hero 1" class="active">
+            <img src="images/hero_2.jpg" alt="Hero 2">
+            <img src="images/hero_3.jpg" alt="Hero 3">
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <select id="con">
+                <option selected disabled>Destination</option>
+                <option>Paris</option>
+                <option>Tokyo</option>
+                <option>New York</option>
+            </select>
+        </div>
+
+        <div class="search-item">
+            <i class="fas fa-bicycle"></i>
+            <select>
+                <option selected disabled>Activity</option>
+                <option>Hiking</option>
+                <option>Sightseeing</option>
+                <option>Cycling</option>
+            </select>
+        </div>
+
+        <div class="search-item">
+            <i class="fas fa-clock"></i>
+            <select>
+                <option selected disabled>Duration</option>
+                <option>1 Day</option>
+                <option>3 Days</option>
+                <option>1 Week</option>
+            </select>
+        </div>
+
+        <div class="search-item">
+            <i class="fas fa-dollar-sign"></i>
+            <select>
+                <option selected disabled>Price</option>
+                <option>Budget</option>
+                <option>Mid-range</option>
+                <option>Luxury</option>
+            </select>
+        </div>
+
+        <button class="search-btn" id="btn8">Search</button>
+    </div>
+    <div class="card-container">
+    <div class="package-card" onclick="openDetails()">
+        <img src="images/1.jpg" alt="Package Image">
+        <div class="package-info">
+            <h3>Beautiful Beach Trip</h3>
+            <p>Explore the serene beaches and enjoy the sun.</p>
+            <p class="price">$499</p>
+        </div>
+    </div>
+
+    
+    <div class="package-card" onclick="openDetails()">
+        <img src="images/2.jpg" alt="Package Image">
+        <div class="package-info">
+            <h3>Beautiful Beach Trip</h3>
+            <p>Explore the serene beaches and enjoy the sun.</p>
+            <p class="price">$499</p>
+        </div>
+    </div>
+
+    <div class="package-card" onclick="openDetails()">
+        <img src="images/3.jpg" alt="Package Image">
+        <div class="package-info">
+            <h3>Beautiful Beach Trip</h3>
+            <p>Explore the serene beaches and enjoy the sun.</p>
+            <p class="price">$499</p>
+        </div>
+    </div>
+    <div class="package-card" onclick="openDetails()">
+        <img src="images/4.jpg" alt="Package Image">
+        <div class="package-info">
+            <h3>Beautiful Beach Trip</h3>
+            <p>Explore the serene beaches and enjoy the sun.</p>
+            <p class="price">$499</p>
+        </div>
+    </div>
+</div>
+    <div>
+        <section class="why-choose-us">
+            <div class="text-content">
+              <h3>Why Choose Us</h3>
+              <h1>Why Choose Us for Your Forest Tour?</h1>
+              <div class="features">
+                <div class="feature">
+                  <img src="images/choose_1_1.svg" alt="Security Icon">
+                  <div>
+                    <h2>Top-notch Security</h2>
+                    <p>Tourism is driven by a set of core values and principles that place unwavering focus on our commitment.</p>
+                  </div>
+                </div>
+                <div class="feature">
+                  <img src="images/choose_1_1.svg" alt="Budget Icon">
+                  <div>
+                    <h2>Budget Efficiency</h2>
+                    <p>Tourism is driven by a set of core values and principles that place unwavering focus on our commitment.</p>
+                  </div>
+                </div>
+                <div class="feature">
+                  <img src="images/choose_1_3.svg" alt="Global Icon">
+                  <div>
+                    <h2>Global Pathway</h2>
+                    <p>Tourism is driven by a set of core values and principles that place unwavering focus on our commitment.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="image-grid">
+              <img src="images/choose_1.jpg" alt="Tiger encounter">
+              <img src="images/choose_2.jpg" alt="Zipline adventure">
+              <img src="images/choose_3.jpg" alt="Paragliding">
+              <img src="images/choose_4.jpg" alt="Hiking group">
+            </div>
+          </section>
+    </div>
+        <div id="chatbot-btn">
+            <button onclick="window.location.href='/chat'">
+            <img src="images/logo3.jpg" alt="Chatbot">
+            </button>
+        </div>
+    
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle layout adjustments for Google Translate bar
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        const header = document.querySelector('.header');
+                        const navbar = document.querySelector('.navbar');
+                        
+                        if (document.body.classList.contains('translated-ltr') || 
+                            document.body.classList.contains('translated-rtl')) {
+                            header.style.top = '40px';
+                            navbar.style.top = '100px';
+                        } else {
+                            header.style.top = '0';
+                            navbar.style.top = '60px';
+                        }
+                    }
+                });
+            });
+
+            observer.observe(document.body, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+
+            // Call Us Dropdown
+            const callUsBtn = document.getElementById('call-us-btn');
+            const callUsDropdown = document.querySelector('.call-us-dropdown');
+
+            if (callUsBtn && callUsDropdown) {
+                callUsBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    callUsDropdown.classList.toggle('show');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.call-us')) {
+                        callUsDropdown.classList.remove('show');
+                    }
+                });
+            }
+
+            // Language selection dropdown
+            const langSelect = document.querySelector('.lang-select button');
+            const langDropdown = document.getElementById('langDropdown');
+
+            if (langSelect && langDropdown) {
+                langSelect.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    langDropdown.style.display = langDropdown.style.display === 'block' ? 'none' : 'block';
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.lang-select')) {
+                        langDropdown.style.display = 'none';
+                    }
+                });
+            }
+
+            // Navbar scroll handling
+            const navbar = document.getElementById('navbar');
+            let lastScrollTop = 0;
+
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop) {
+                    navbar.style.top = '-70px'; // Hide navbar
+                } else {
+                    navbar.style.top = document.body.classList.contains('translated-ltr') ? '100px' : '60px'; // Show navbar
+                }
+                lastScrollTop = scrollTop;
+            });
+
+            // Add user profile dropdown handling
+            const userProfile = document.querySelector('.user-profile');
+            const userDropdown = userProfile?.querySelector('.user-dropdown');
+            
+            if (userProfile && userDropdown) {
+                // Handle hover events
+                userProfile.addEventListener('mouseenter', function() {
+                    userDropdown.style.display = 'block';
+                });
+                
+                userProfile.addEventListener('mouseleave', function() {
+                    userDropdown.style.display = 'none';
+                });
+
+                // Handle click events
+                document.addEventListener('click', function(e) {
+                    if (!userProfile.contains(e.target)) {
+                        userDropdown.style.display = 'none';
+                    }
+                });
+
+                // Prevent dropdown from closing when clicking inside it
+                userDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        });
+
+        function selectLanguage(langCode, langText) {
+            document.getElementById("selected-lang").textContent = langText;
+            var translateSelect = document.querySelector(".goog-te-combo");
+            if (translateSelect) {
+                translateSelect.value = langCode;
+                translateSelect.dispatchEvent(new Event("change"));
+            }
+            document.getElementById("langDropdown").style.display = "none";
+        }
+
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,mr,hi,gu,ta,te,pa,bn',
+                autoDisplay: false,
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+
+        // Add hero image slider functionality
+        const images = document.querySelectorAll('.hero img');
+        const textContainer = document.querySelector('.text');
+        const titleElement = document.querySelector('.text h1');
+        const descriptionElement = document.querySelector('.text p');
+
+        const texts = [
+            {
+                title: "Let's Adventure Beyond Limits! 🌍✈️",
+                description: "Explore new destinations with AI-powered travel planning."
+            },
+            {
+                title: "Wander More, Worry Less! 🎒🌟",
+                description: "Personalized itineraries, smart packing lists, and travel tips—all in one place."
+            },
+            {
+                title: "Your Journey, Your Way! 🚀🗺️",
+                description: "Plan, pack, and explore effortlessly with Travenner."
+            }
+        ];
+
+        let currentIndex = 0;
+
+        function changeSlide() {
+            images[currentIndex].classList.remove('active');
+            textContainer.classList.remove('active');
+
+            currentIndex = (currentIndex + 1) % images.length;
+
+            setTimeout(() => {
+                titleElement.textContent = texts[currentIndex].title;
+                descriptionElement.textContent = texts[currentIndex].description;
+
+                images[currentIndex].classList.add('active');
+                textContainer.classList.add('active');
+            }, 500);
+        }
+
+        setInterval(changeSlide, 5000);
+    </script>   
+   
+
+    <footer class="footer">
+        <div class="newsletter">
+            <div class="newsletter-text">
+                <h2>Get Updated With The Latest Newsletter</h2>
+            </div>
+            <div class="newsletter-input">
+                <input type="email" placeholder="Enter your Email">
+            </div>
+            <div class="newsletter-button">
+                <button id="btn1" onclick="window.location.href='/feedback'">Feedback <i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="column">
+                <img src="images/logo.png">
+                <h3>Travenner</h3>
+                <p></p>
+                <div class="social-icons">
+                    <a href="http://facebook.com">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="http://twitter.com">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="http://linkedin.com">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="http://whatsapp.com">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="http://instagram.com">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> Home</a></li>
+                    <li><a href="/about"><i class="fas fa-angle-right"></i> About Us</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> Trips</a></li>
+                    <li><a href="/contact-us"><i class="fas fa-angle-right"></i> Contact Us</a></li>
+                  
+                </ul>
+            </div>
+            <div class="column">
+                <h3>Get In Touch</h3>
+                <div class="th-widget-contact">
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <img decoding="async" src="images/phone.svg" alt="Phone Icon">
+                        </div>
+                        <div class="details">
+                            <p><a href="tel:+01234567890" class="info-box_link">+01 234 567 890</a></p>
+                            <p><a href="tel:+09876543210" class="info-box_link">+09 876 543 210</a></p>
+                        </div>
+                    </div>
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <img decoding="async" src="images/envelope.svg" alt="Email Icon">
+                        </div>
+                        <div class="details">
+                            <p><a href="mailto:mailinfo00@travenner.com" class="info-box_link">mailinfo00@travenner.com</a></p>
+                            <p><a href="mailto:support24@travenner.com" class="info-box_link">support24@travenner.com</a></p>
+                        </div>
+                    </div>
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <img decoding="async" src="images/location.svg" alt="Location Icon">
+                        </div>
+                        <div class="details">
+                            <p>Vasai-Virar,Maharastra</p>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div class="column">
+                <h3>Instagram Post</h3>
+                <div class="instagram-posts">
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_1.jpg" alt="Instagram Image 1">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                                <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                       
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_2.jpg" alt="Instagram Image 2">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_3.jpg" alt="Instagram Image 3">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_4.jpg" alt="Instagram Image 4">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_5.jpg" alt="Instagram Image 5">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_6.jpg" alt="Instagram Image 6">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                </div>
+            </div>
+            <div class="grey-line"></div>
+                <div class="footer-text">
+                    <p>Copyright 2025 Travenner. All Rights Reserved.</p>
+                    <div class="card">
+                        <p>We Accept</p>
+                        <img src="images/cards.png" alt="Accepted Cards">
+                    </div>
+                </div>
+            </div>
+    </footer>
+</body>
+</html>

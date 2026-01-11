@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: #113D48;
+    backdrop-filter: blur(10px);
+    height: 40px;
+    position: fixed;
+    top: 60px;
+    width: 100%;
+    z-index: 90;
+    padding-right: 20px;
+    transition: top 0.3s;
+}
+
+
+.navbar ul {
+list-style: none;
+display: flex;
+margin: 0;
+padding: 0;
+}
+
+.navbar ul li {
+position: relative;
+margin: 0 20px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    padding: 5px 5px;
+    display: inline-block;
+    position: relative;
+    transition: color 0.3s ease-in-out;
+}
+.navbar ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease-in-out;
+}
+.navbar ul li a:hover::after {
+    transform: scaleX(1);
+}
+.navbar ul li a:hover {
+background-color: rgba(255, 255, 255, 0.2);
+border-radius: 5px;
+}
+
+.navbar ul li ul {
+position: absolute;
+top: 100%;
+right: 0; /* Align dropdown to the right */
+background-color: #113D48;
+display: none;
+flex-direction: column;
+min-width: 150px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+z-index: 1000;
+}
+
+.navbar ul li ul li {
+margin: 0;
+}
+
+.navbar ul li ul li a {
+padding: 10px;
+white-space: nowrap;
+}
+
+.navbar ul li:hover ul {
+display: flex;
+}
+
+.menu-toggle {
+display: none;
+color: white;
+font-size: 1.5rem;
+cursor: pointer;
+}
+
+.navbar .menu-icon {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 30px;
+height: 30px;
+background-color: white;
+border-radius: 50%;
+cursor: pointer;
+}
+
+.navbar .menu-icon div {
+width: 4px;
+height: 4px;
+background-color: #08303f;
+border-radius: 50%;
+margin: 2px;
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <ul>
+            <li><a href="headfoot.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li>
+                <a href="#">Destinations &#9662;</a>
+                <ul>
+                    <li><a href="#">Europe</a></li>
+                    <li><a href="#">Asia</a></li>
+                    <li><a href="#">America</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Services &#9662;</a>
+                <ul>
+                    <li><a href="#">Travel Packages</a></li>
+                    <li><a href="#">Guides</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="Trip-Types/index.html">Trips &#9662;</a>
+                <ul>
+                    <li><a href="#">Trip 1</a></li>
+                    <li><a href="#">Trip 2</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Pages</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="contact-us.html">Contact Us</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

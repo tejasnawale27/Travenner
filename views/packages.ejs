@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Packages</title>
+    <style>
+        .packages-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .package-card h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .package-details {
+            margin-top: 15px;
+        }
+
+        .package-price {
+            font-size: 1.2em;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .book-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .book-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Travel Packages</h1>
+    <div class="packages-container">
+        <% if (packages && packages.length > 0) { %>
+            <% packages.forEach(package => { %>
+                <div class="package-card">
+                    <h2><%= package.name %></h2>
+                    <div class="package-details">
+                        <p><strong>Location:</strong> <%= package.location %></p>
+                        <p><strong>Price:</strong> <span class="package-price">$<%= package.price %></span></p>
+                        <p><strong>Trip Type:</strong> <%= package.tripType %></p>
+                        <% if (package.overview) { %>
+                            <p><strong>Overview:</strong> <%= package.overview %></p>
+                        <% } %>
+                    </div>
+                    <a href="/booking" class="book-button">Book Now</a>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No packages found</p>
+        <% } %>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="translate.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Manrope|Montez' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Trips - Travenner</title>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,mr,hi,gu,ta,te,pa,bn',
+                layout: google.translate.TranslateElement.InlineLayout.TOP,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+    <script src="translate.js"></script>
+   
+    <style>
+        body {
+            margin: 0;
+            font-family: Manrope, sans-serif;
+            background-color: #f4f4f4;
+            transition: margin-top 0.3s ease;
+        }
+
+        .hero {
+            background: url('images/img1.jpg') no-repeat center center/cover;
+            position: relative;
+            height: 300px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            margin-top: 100px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            margin: 0;
+            font-family: Manrope, sans-serif;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            margin: 10px 0 0;
+        }
+        .package-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .package-card { 
+            width: 300px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+            text-align: center; 
+            cursor: pointer;
+        }
+        .package-card img { width: 100%; height: 200px; object-fit: cover; }
+        .package-info { padding: 10px; }
+        .price { color: #1CA8CB; font-weight: bold;font-size: 24px; }
+        .view-details { background: #113D48; color: white; padding: 10px; border: none; cursor: pointer; }
+        .view-details:hover { background: #0a2d38; } 
+         
+        .column p, h3 {
+    color: rgb(56 33 33) ;
+    padding: 5px;
+    margin-top: -17px;}
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .login, .register {
+            padding: 8px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .login {
+            background-color: transparent;
+            color: #113D48;
+            border: 2px solid #113D48;
+        }
+
+        .register {
+            background-color: #113D48;
+            color: white;
+        }
+
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50px;
+            object-fit: cover;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            width: 200px;
+            z-index: 1000;
+        }
+
+        .user-profile:hover .user-dropdown {
+            display: block;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #113D48;
+            height: 40px;
+            position: fixed;
+            top: 60px;
+            width: 100%;
+            z-index: 90;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin: 0 20px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            padding: 5px 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="images/logo1.jpeg" alt="Travenner Logo">
+        </div>
+        <div class="menu">
+            <% if (!locals.user) { %>
+                <button class="login" onclick="window.location.href='/login'">Login</button>
+                <button class="register" onclick="window.location.href='/register'">Sign Up</button>
+            <% } else { %>
+                <div class="user-profile">
+                    <img src="<%= locals.user.profileImage || '/images/default-user.png' %>" alt="User Profile" class="user-avatar">
+                    <div class="user-dropdown">
+                        <span class="user-name"><%= locals.user.name %></span>
+                        <!-- <a href="/profile"><i class="fas fa-user"></i> My Profile</a>
+                        <a href="/my-bookings"><i class="fas fa-suitcase"></i> My Bookings</a> -->
+                        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/destination">Destination</a></li>
+            <li>
+                <a href="#">Services</a>
+                <ul>
+                    <li><a onclick="window.location.href='/guide'">Guide</a></li>
+                    
+                </ul>
+            </li>
+            <li><a href="/trips">Trips</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/contact-us">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>Trip Packages</h1>
+            <p>Home &rarr; Trips</p>
+        </div>
+    </div>
+
+    <div class="package-list">
+        <div class="package-card" onclick="viewDetails('Mountain Adventure')">
+            <img src="images/pkg1.jpeg" alt="Mountain Adventure">
+            <div class="package-info">
+                <h3>Mountain Adventure</h3>
+                <p>Hike through breathtaking landscapes and experience nature.</p>
+                <p class="price">₹20000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+
+        <div class="package-card" onclick="viewDetails('Rajapur')">
+            <img src="images/pkg2.png" alt="Rajapur">
+            <div class="package-info">
+                <h3>Rajapur</h3>
+                <p>Experience Rajapur's greenery, ancient temples, and the mystical Ganga spring.</p>
+                <p class="price">₹4000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+
+        <div class="package-card" onclick="viewDetails('Pune')">
+            <img src="images/pkg3.jpeg" alt="Pune">
+            <div class="package-info">
+                <h3>Pune</h3>
+                <p>Discover Pune's rich history, serene hill forts, and bustling nightlife.</p>
+                <p class="price">₹5000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Kerala')">
+            <img src="images/pkg4.jpeg" alt="Kerala">
+            <div class="package-info">
+                <h3>Kerala</h3>
+                <p>Immerse in Kerala's lush backwaters, misty hills, and tranquil beaches.</p>
+                <p class="price">₹15000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Goa')">
+            <img src="images/pkg5.jpeg" alt="Goa">
+            <div class="package-info">
+                <h3>Goa</h3>
+                <p>Enjoy Goa's sun-kissed beaches, lively nightlife, and Portuguese heritage.</p>
+                <p class="price">₹12000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Rajasthan')">
+            <img src="images/pkg6.jpeg" alt="Rajasthan">
+            <div class="package-info">
+                <h3>Rajasthan</h3>
+                <p>Experience Rajasthan's royal palaces, golden deserts, and vibrant culture.</p>
+                <p class="price">₹7000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Delhi')">
+            <img src="images/pkg7.jpeg" alt="Delhi">
+            <div class="package-info">
+                <h3>Delhi</h3>
+                <p>Explore Delhi's historic monuments, bustling markets, and diverse cuisine.</p>
+                <p class="price">₹13000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Kolkata')">
+            <img src="images/pkg8.jpeg" alt="Kolkata">
+            <div class="package-info">
+                <h3>Kolkata</h3>
+                <p>Witness Kolkata's colonial charm, artistic heritage, and delectable sweets.</p>
+                <p class="price">₹6000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Gujarat')">
+            <img src="images/pkg9.jpeg" alt="Gujarat">
+            <div class="package-info">
+                <h3>Gujarat</h3>
+                <p>Experience Gujarat's rich heritage, majestic temples, and scenic white deserts.</p>
+                <p class="price">₹9000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Jammu & Kashmir')">
+            <img src="images/pkg10.jpeg" alt="Jammu & Kashmir">
+            <div class="package-info">
+                <h3>Jammu & Kashmir</h3>
+                <p>Experience Jammu's spiritual essence, ancient temples, and scenic Himalayan landscapes.</p>
+                <p class="price">₹8000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Ladakh')">
+            <img src="images/pkg11.jpeg" alt="Ladakh">
+            <div class="package-info">
+                <h3>Ladakh</h3>
+                <p>Experience Ladakh's rugged mountains, serene monasteries, and breathtaking high-altitude lakes.</p>
+                <p class="price">₹10000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Ram Mandir')">
+            <img src="images/pkg12.jpeg" alt="Ram Mandir">
+            <div class="package-info">
+                <h3>Ram Mandir</h3>
+                <p>Experience the divine aura of Ram Mandir, Ayodhya's sacred temples, and rich cultural heritage.</p>
+                <p class="price">₹10000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="newsletter">
+            <div class="newsletter-text">
+                <h2>Get Updated With The Latest Newsletter</h2>
+            </div>
+            <div class="newsletter-input">
+                <input type="email" placeholder="Enter your Email">
+            </div>
+            <div class="newsletter-button">
+                <button id="btn1">Subscribe Now <i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="column">
+                <img src="images/logo.png">
+                <h3>Travenner</h3>
+                <p>Seamlessly synergize cross-functional paradigms to architect cutting-edge scalable ecosystems.</p>
+                <div class="social-icons">
+                    <a href="http://facebook.com">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="http://twitter.com">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="http://linkedin.com">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="http://whatsapp.com">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="http://instagram.com">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> Home</a></li>
+                    <li><a onclick="window.location.href='/about'"><i class="fas fa-angle-right"></i> About Us</a></li>
+                    <li><a onclick="window.location.href='/trips'"><i class="fas fa-angle-right"></i> Trips</a></li>
+                    <li><a onclick="window.location.href='/contact-us'"><i class="fas fa-angle-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="column">
+                <h3>Get In Touch</h3>
+                <div class="th-widget-contact">
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <img decoding="async" src="images/phone.svg" alt="Phone Icon">
+                        </div>
+                        <div class="details">
+                            <p><a href="tel:+01234567890" class="info-box_link">+01 234 567 890</a></p>
+                            <p><a href="tel:+09876543210" class="info-box_link">+09 876 543 210</a></p>
+                        </div>
+                    </div>
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <img decoding="async" src="images/envelope.svg" alt="Email Icon">
+                        </div>
+                        <div class="details">
+                            <p><a href="mailto:mailinfo00@travenner.com" class="info-box_link">mailinfo00@travenner.com</a></p>
+                            <p><a href="mailto:support24@travenner.com" class="info-box_link">support24@travenner.com</a></p>
+                        </div>
+                    </div>
+                    <div class="info-box_text">
+                        <div class="icon">
+                            <img decoding="async" src="images/location.svg" alt="Location Icon">
+                        </div>
+                        <div class="details">
+                            <p>Vasai-Virar,Maharastra</p>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div class="column">
+                <h3>Instagram Post</h3>
+                <div class="instagram-posts">
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_1.jpg" alt="Instagram Image 1">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                                <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_2.jpg" alt="Instagram Image 2">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_3.jpg" alt="Instagram Image 3">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_4.jpg" alt="Instagram Image 4">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_5.jpg" alt="Instagram Image 5">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                    <div class="instagram-post">
+                        <img src="images/gallery_1_6.jpg" alt="Instagram Image 6">
+                        <a target="_blank" href="https://www.instagram.com/" class="gallery-btn">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>  
+                </div>
+            </div>
+            <div class="grey-line"></div>
+            <div class="footer-text">
+                <div id="ftext">Copyright 2025 Travenner. All Rights Reserved.</div>
+                <div class="card">
+                    <p>We Accept</p>
+                    <img src="images/cards.png" alt="Accepted Cards">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        function viewDetails(packageName) {
+            if (!packageName) {
+                console.error('Package name is required');
+                return;
+            }
+            window.location.href = `/index1?name=${encodeURIComponent(packageName)}`;
+        }
+    </script>
+</body>
+</html>

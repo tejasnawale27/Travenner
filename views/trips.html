@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="translate.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Manrope|Montez' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Trips - Travenner</title>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,mr,hi,gu,ta,te,pa,bn',
+                layout: google.translate.TranslateElement.InlineLayout.TOP,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+    <script src="translate.js"></script>
+   
+    <style>
+        body {
+            margin: 0;
+            font-family: Manrope, sans-serif;
+            background-color: #f4f4f4;
+            transition: margin-top 0.3s ease;
+        }
+
+        .hero {
+            background: url('img1.jpg') no-repeat center center/cover;
+            position: relative;
+            height: 300px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            margin-top: 100px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            margin: 0;
+            font-family: Manrope, sans-serif;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            margin: 10px 0 0;
+        }
+        .package-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .package-card { 
+            width: 300px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+            text-align: center; 
+            cursor: pointer;
+        }
+        .package-card img { width: 100%; height: 200px; object-fit: cover; }
+        .package-info { padding: 10px; }
+        .price { color: #1CA8CB; font-weight: bold;font-size: 24px; }
+        .view-details { background: #113D48; color: white; padding: 10px; border: none; cursor: pointer; }
+        .view-details:hover { background: #0a2d38; } 
+         
+        .column p, h3 {
+    color: rgb(56 33 33) ;
+    padding: 5px;
+    margin-top: -17px;}
+     </style>
+</head>
+<body>
+    <div class="header">
+        <!-- Header content same as blog.html -->
+    </div>
+ 
+    <nav class="navbar" id="navbar">
+        <!-- Navbar content same as blog.html -->
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>Trip Packages</h1>
+            <p>Home &rarr; Trips</p>
+        </div>
+    </div>
+
+    <div class="package-list">
+        <div class="package-card" onclick="viewDetails('Mountain Adventure')">
+            <img src="pkg1.jpeg" alt="Mountain Adventure">
+            <div class="package-info">
+                <h3>Mountain Adventure</h3>
+                <p>Hike through breathtaking landscapes and experience nature.</p>
+                <p class="price">₹20000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+
+        <div class="package-card" onclick="viewDetails('Rajapur')">
+            <img src="pkg2.png" alt="Rajapur">
+            <div class="package-info">
+                <h3>Rajapur</h3>
+                <p>Experience Rajapur’s greenery, ancient temples, and the mystical Ganga spring.</p>
+                <p class="price">₹4000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+
+        <div class="package-card" onclick="viewDetails('Pune')">
+            <img src="pkg3.jpeg" alt="Pune">
+            <div class="package-info">
+                <h3>Pune</h3>
+                <p>Discover Pune’s rich history, serene hill forts, and bustling nightlife.</p>
+                <p class="price">₹5000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Kerala')">
+            <img src="pkg4.jpeg" alt="Kerala">
+            <div class="package-info">
+                <h3>Kerala</h3>
+                <p>Immerse in Kerala’s lush backwaters, misty hills, and tranquil beaches.</p>
+                <p class="price">₹15000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Goa')">
+            <img src="pkg5.jpeg" alt="Goa">
+            <div class="package-info">
+                <h3>Goa</h3>
+                <p>Enjoy Goa’s sun-kissed beaches, lively nightlife, and Portuguese heritage.</p>
+                <p class="price">₹12000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Rajasthan')">
+            <img src="pkg6.jpeg" alt="Rajasthan">
+            <div class="package-info">
+                <h3>Rajasthan</h3>
+                <p>Experience Rajasthan’s royal palaces, golden deserts, and vibrant culture.</p>
+                <p class="price">₹7000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Delhi')">
+            <img src="pkg7.jpeg" alt="Delhi">
+            <div class="package-info">
+                <h3>Delhi</h3>
+                <p>Explore Delhi’s historic monuments, bustling markets, and diverse cuisine.</p>
+                <p class="price">₹13000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Kolkata')">
+            <img src="pkg8.jpeg" alt="Kolkata">
+            <div class="package-info">
+                <h3>Kolkata</h3>
+                <p>Witness Kolkata’s colonial charm, artistic heritage, and delectable sweets.</p>
+                <p class="price">₹6000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Gujurat')">
+            <img src="pkg9.jpeg" alt="Gujurat">
+            <div class="package-info">
+                <h3>Gujurat</h3>
+                <p>Experience Gujarat’s rich heritage, majestic temples, and scenic white deserts.</p>
+                <p class="price">₹9000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Jammu & Kashmir')">
+            <img src="pkg10.jpeg" alt="Jammu & Kashmir">
+            <div class="package-info">
+                <h3>Jammu & Kashmir</h3>
+                <p>Experience Jammu’s spiritual essence, ancient temples, and scenic Himalayan landscapes.</p>
+                <p class="price">₹8000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Ladakh')">
+            <img src="pkg11.jpeg" alt="Ladakh">
+            <div class="package-info">
+                <h3>Ladakh</h3>
+                <p>Experience Ladakh’s rugged mountains, serene monasteries, and breathtaking high-altitude lakes.</p>
+                <p class="price">₹10000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+        <div class="package-card" onclick="viewDetails('Ram Mandir')">
+            <img src="pkg12.jpeg" alt="Ram Mandir">
+            <div class="package-info">
+                <h3>Ram Mandir</h3>
+                <p>Experience the divine aura of Ram Mandir, Ayodhya’s sacred temples, and rich cultural heritage.</p>
+                <p class="price">₹10000</p>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <!-- Footer content same as blog.html -->
+    </footer>
+    <script>
+        function viewDetails(packageName) {
+            window.location.href = `index.html?name=${encodeURIComponent(packageName)}`;
+        }
+    </script>
+</body>
+</html>
